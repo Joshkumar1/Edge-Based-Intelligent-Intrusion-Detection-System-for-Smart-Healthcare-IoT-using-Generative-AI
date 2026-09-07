@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # EdgeShield AI Backend (FastAPI + ML Engine + WebSockets)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: edgeshield-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./edgeshield.db
+      - OLLAMA_BASE_URL=http://ollama:11434
+    volumes:
+      - ./backend/data:/app/data
+      - ./ml_pipeline/models:/app/ml_pipeline/models
+    depends_on:
+      - ollama
+    restart: always
+
+  # Privacy-Preserving Local SLM Inference Service
+  ollama:
+    image: ollama/ollama:latest
+    container_name: edgeshield-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_storage:/root/.ollama
+    restart: always
+
+  # Modern Healthcare Security Frontend Cockpit
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: edgeshield-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  ollama_storage:

@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+backend/venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.cache
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+.npm
+*.log
+
+# Databases & SQLite
+*.db
+*.sqlite
+*.sqlite3
+edgeshield.db
+backend/edgeshield.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# IDE / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo

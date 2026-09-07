@@ -1,0 +1,26 @@
+{
+  "features": [
+    "packet_length",
+    "flow_duration",
+    "header_length",
+    "byte_rate",
+    "packet_rate",
+    "tcp_syn_flag",
+    "mqtt_msg_rate",
+    "modbus_fn_code",
+    "entropy"
+  ],
+  "labels": [
+    "Normal",
+    "DICOM Ransomware",
+    "MQTT Flood DoS",
+    "Modbus Command Injection",
+    "ARP Spoofing MITM",
+    "Port Scan Reconnaissance"
+  ],
+  "metrics": {
+    "macro_precision": 1.0,
+    "macro_recall": 1.0,
+    "macro_f1": 1.0
+  }
+}
