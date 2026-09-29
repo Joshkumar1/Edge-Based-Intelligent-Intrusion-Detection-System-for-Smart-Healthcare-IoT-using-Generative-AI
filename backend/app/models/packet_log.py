@@ -25,6 +25,15 @@ class PacketLog(Base):
     modbus_fn_code = Column(Integer, default=0)
     entropy = Column(Float, default=0.0)
     
+    # Canonical Event Tracing
+    event_id = Column(String, index=True, nullable=True)
+    correlation_id = Column(String, index=True, nullable=True)
+    device_id = Column(String, index=True, nullable=True)
+    traffic_origin = Column(String, default="LIVE")  # LIVE, SIMULATOR, REPLAYED, GATEWAY
+    detection_latency_ms = Column(Float, default=0.0)
+    
     # Classification Result
+    is_anomaly = Column(Integer, default=0)
     predicted_label = Column(String, default="Normal")
     threat_score = Column(Float, default=0.0)
+

@@ -130,20 +130,23 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
         <div className="p-5 rounded-2xl bg-card border shadow-subtle flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Inference Speed
+              Detection Speed
             </span>
             <div className="p-2 rounded-xl bg-medical-teal/10 text-medical-teal">
               <Cpu className="h-5 w-5" />
             </div>
           </div>
           <div>
-            <div className="text-3xl font-extrabold text-emerald-500">0.84 ms</div>
+            <div className="text-3xl font-extrabold text-emerald-500">
+              {stats.detection_latency_ms != null ? `${stats.detection_latency_ms.toFixed(2)} ms` : (lastTelemetryEvent?.detection_latency_ms != null ? `${lastTelemetryEvent.detection_latency_ms.toFixed(2)} ms` : '< 1.0 ms')}
+            </div>
             <div className="text-xs text-muted-foreground font-medium flex items-center mt-1">
-              <span>Zero-Cloud Dependency</span>
+              <span>{stats.ai_latency_ms ? `Edge ML (AI: ${stats.ai_latency_ms.toFixed(0)}ms)` : 'Edge Pipeline Verified'}</span>
             </div>
           </div>
         </div>
       </div>
+
 
       {/* Main Grid: Telemetry Graph & Threat Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.schemas.llm import ExplainRequest, ExplainResponse
+from app.schemas.llm import ExplainRequest, ExplainResponse, CopilotRequest, CopilotResponse
 from app.services.llm_service import llm_assistant
 
 router = APIRouter()
@@ -23,3 +23,19 @@ async def generate_explanation(req: ExplainRequest):
         recommended_mitigation=mitigation,
         ai_engine_used=engine
     )
+
+
+@router.post("/copilot", response_model=CopilotResponse)
+async def query_copilot(req: CopilotRequest):
+    """
+    Unified Application-Aware AI Copilot endpoint.
+    Retrieves grounded context (Research paper RAG, Incident telemetry, Device posture, Architecture mechanics)
+    and formats evidence, analysis, and page citations without hallucinating.
+    """
+    result = await llm_assistant.query_copilot(
+        context_type=req.context_type,
+        query=req.query,
+        context_id=req.context_id,
+        context_data=req.context_data
+    )
+    return CopilotResponse(**result)

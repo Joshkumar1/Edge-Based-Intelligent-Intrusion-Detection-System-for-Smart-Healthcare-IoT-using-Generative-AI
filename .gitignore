@@ -42,3 +42,14 @@ backend/edgeshield.db
 .idea/
 *.swp
 *.swo
+
+# Large archives and build caches
+*.zip
+MP.zip
+.vite/
+frontend/.vite/
+*.db-shm
+*.db-wal
+backend/uploads/
+
+

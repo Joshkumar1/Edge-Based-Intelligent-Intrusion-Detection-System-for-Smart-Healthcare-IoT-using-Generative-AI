@@ -1,116 +1,96 @@
-import uuid
-from datetime import datetime
-from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+
 from app.core.database import get_db
 from app.schemas.detection import NetworkPacketInput, DetectionResult
-from app.services.ml_engine import ml_engine
-from app.services.llm_service import llm_assistant
+from app.schemas.security_event import TrafficOrigin
+from app.services.security_pipeline import security_pipeline
 from app.services.traffic_sim import traffic_simulator
-from app.models.device import Device
-from app.models.alert import Alert
 
 router = APIRouter()
 
 
 @router.post("/analyze", response_model=DetectionResult)
-async def analyze_packet(packet: NetworkPacketInput, db: Session = Depends(get_db)):
-    features = packet.model_dump()
+def analyze_packet(packet: NetworkPacketInput, db: Session = Depends(get_db)):
+    """
+    Thin transport endpoint for edge packet analysis.
+    Validates payload and delegates directly to the Canonical Security Pipeline.
+    Non-blocking: ML detection executes in sub-5ms; LLM explainability runs asynchronously.
+    """
+    origin = TrafficOrigin(packet.traffic_origin) if packet.traffic_origin else TrafficOrigin.LIVE
     
-    # 1. Run ML Detection Engine
-    is_anomaly, anomaly_score, threat_type, confidence, severity, key_features = ml_engine.predict_packet(features)
-    
-    # 2. Find target device details
-    device = db.query(Device).filter(
-        (Device.ip_address == packet.dst_ip) | (Device.device_id == "DEV-ICU-101")
-    ).first()
-    
-    target_device_id = device.device_id if device else "DEV-UNKNOWN"
-    target_device_name = device.name if device else "Unregistered Medical Device"
-    target_device_type = device.category if device else "Medical IoT Gateway"
-    location = device.location if device else "ICU Ward"
-
-    explanation, impact, mitigation = None, None, None
-
-    if is_anomaly and threat_type != "Normal":
-        # 3. Generate Local LLM Explanation
-        explanation, impact, mitigation, _ = await llm_assistant.generate_explanation(
-            threat_type=threat_type,
-            severity=severity,
-            source_ip=packet.src_ip,
-            target_device_name=target_device_name,
-            target_device_type=target_device_type,
-            location=location,
-            key_features=key_features
-        )
-
-        # 4. Save Alert to Database
-        alert_id = f"ALT-{uuid.uuid4().hex[:8].upper()}"
-        alert = Alert(
-            alert_id=alert_id,
-            timestamp=datetime.utcnow(),
-            source_ip=packet.src_ip,
-            destination_ip=packet.dst_ip,
-            target_device_id=target_device_id,
-            protocol=packet.protocol,
-            anomaly_score=anomaly_score,
-            is_anomaly=1,
-            threat_type=threat_type,
-            confidence=confidence,
-            severity=severity,
-            key_features=key_features,
-            clinical_explanation=explanation,
-            clinical_impact=impact,
-            recommended_mitigation=mitigation,
-            status="NEW"
-        )
-        db.add(alert)
-
-        # Update Device Risk Score
-        if device:
-            device.risk_score = min(100.0, device.risk_score + (30.0 if severity == "CRITICAL" else 15.0))
-            if severity in ["CRITICAL", "HIGH"]:
-                device.status = "Critical" if severity == "CRITICAL" else "Warning"
-
-        db.commit()
+    # Ingest through canonical pipeline
+    event = security_pipeline.ingest(telemetry=packet, origin=origin, db=db)
 
     return DetectionResult(
-        is_anomaly=is_anomaly,
-        anomaly_score=anomaly_score,
-        threat_type=threat_type,
-        confidence=confidence,
-        severity=severity,
-        key_features=key_features,
-        target_device_id=target_device_id,
-        target_device_name=target_device_name,
-        explanation=explanation,
-        impact=impact,
-        mitigation=mitigation
+        is_anomaly=event.anomaly_detected,
+        anomaly_score=event.anomaly_score,
+        threat_type=event.threat_type,
+        confidence=event.classifier_confidence,
+        severity=event.severity,
+        key_features=event.extracted_features,
+        target_device_id=event.device_id,
+        target_device_name=event.device_name,
+        explanation=event.explanation,
+        impact=event.clinical_impact,
+        mitigation=event.recommended_mitigation,
+        event_id=event.event_id,
+        correlation_id=event.correlation_id,
+        observation_type=event.observation_type.value,
+        device_match_status=event.device_match_status.value,
+        traffic_origin=event.source.value,
+        explanation_status=event.explanation_status.value,
+        detection_latency_ms=event.latency_metrics.total_detection_ms,
+        ai_explanation_latency_ms=event.latency_metrics.ai_explanation_ms,
+        alert_id=event.alert_id,
+        packet_count=event.packet_count
     )
 
 
 @router.post("/simulate")
-async def simulate_packet(attack_type: str = "random", db: Session = Depends(get_db)):
-    """Simulates a incoming packet stream event for testing & visual demonstration."""
+def simulate_packet(attack_type: str = "random", db: Session = Depends(get_db)):
+    """
+    Simulates an incoming packet stream event.
+    Explicitly marked with source = SIMULATOR and processed through the Canonical Security Pipeline.
+    """
     force_attack = None if attack_type == "random" else attack_type
     simulated_features = traffic_simulator.generate_packet(force_attack=force_attack)
     
-    packet_input = NetworkPacketInput(
-        src_ip=simulated_features["src_ip"],
-        dst_ip=simulated_features["dst_ip"],
-        src_port=simulated_features["src_port"],
-        dst_port=simulated_features["dst_port"],
-        protocol=simulated_features["protocol"],
-        packet_length=simulated_features["packet_length"],
-        flow_duration=simulated_features["flow_duration"],
-        header_length=simulated_features["header_length"],
-        byte_rate=simulated_features["byte_rate"],
-        packet_rate=simulated_features["packet_rate"],
-        tcp_syn_flag=simulated_features["tcp_syn_flag"],
-        mqtt_msg_rate=simulated_features["mqtt_msg_rate"],
-        modbus_fn_code=simulated_features["modbus_fn_code"],
-        entropy=simulated_features["entropy"]
+    # Process through the exact same canonical pipeline with SIMULATOR provenance
+    event = security_pipeline.ingest(
+        telemetry=simulated_features,
+        origin=TrafficOrigin.SIMULATOR,
+        db=db
     )
-    
-    result = await analyze_packet(packet_input, db)
-    return {"simulated_features": simulated_features, "detection_result": result}
+
+    detection_result = DetectionResult(
+        is_anomaly=event.anomaly_detected,
+        anomaly_score=event.anomaly_score,
+        threat_type=event.threat_type,
+        confidence=event.classifier_confidence,
+        severity=event.severity,
+        key_features=event.extracted_features,
+        target_device_id=event.device_id,
+        target_device_name=event.device_name,
+        explanation=event.explanation,
+        impact=event.clinical_impact,
+        mitigation=event.recommended_mitigation,
+        event_id=event.event_id,
+        correlation_id=event.correlation_id,
+        observation_type=event.observation_type.value,
+        device_match_status=event.device_match_status.value,
+        traffic_origin=event.source.value,
+        explanation_status=event.explanation_status.value,
+        detection_latency_ms=event.latency_metrics.total_detection_ms,
+        ai_explanation_latency_ms=event.latency_metrics.ai_explanation_ms,
+        alert_id=event.alert_id,
+        packet_count=event.packet_count
+    )
+
+    return {
+        "simulated_features": simulated_features,
+        "detection_result": detection_result,
+        "traffic_origin": "SIMULATOR",
+        "event_id": event.event_id,
+        "alert_id": event.alert_id
+    }

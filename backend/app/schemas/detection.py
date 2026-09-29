@@ -19,6 +19,8 @@ class NetworkPacketInput(BaseModel):
     mqtt_msg_rate: float = Field(default=15.0, description="MQTT messages per sec")
     modbus_fn_code: int = Field(default=0, description="Modbus function code (e.g. 5, 6, 16)")
     entropy: float = Field(default=4.5, description="Payload byte entropy (0.0 to 8.0)")
+    traffic_origin: Optional[str] = Field(default="LIVE", description="LIVE, SIMULATOR, REPLAYED, GATEWAY")
+    correlation_id: Optional[str] = Field(default=None, description="Optional caller correlation ID")
 
 
 class DetectionResult(BaseModel):
@@ -33,3 +35,16 @@ class DetectionResult(BaseModel):
     explanation: Optional[str] = None
     impact: Optional[str] = None
     mitigation: Optional[str] = None
+    
+    # Canonical Tracing & Latency Metrics
+    event_id: Optional[str] = None
+    correlation_id: Optional[str] = None
+    observation_type: Optional[str] = None
+    device_match_status: Optional[str] = None
+    traffic_origin: Optional[str] = "LIVE"
+    explanation_status: Optional[str] = "PENDING"
+    detection_latency_ms: float = 0.0
+    ai_explanation_latency_ms: Optional[float] = None
+    alert_id: Optional[str] = None
+    packet_count: int = 1
+

@@ -6,7 +6,10 @@ from app.api.v1.endpoints import (
     detection,
     dashboard,
     analytics,
-    llm_assistant
+    llm_assistant,
+    documents,
+    audit,
+    signals
 )
 
 api_router = APIRouter()
@@ -18,3 +21,7 @@ api_router.include_router(detection.router, prefix="/detection", tags=["Intrusio
 api_router.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard Telemetry"])
 api_router.include_router(analytics.router, prefix="/analytics", tags=["ML Analytics"])
 api_router.include_router(llm_assistant.router, prefix="/llm", tags=["Local LLM Assistant"])
+api_router.include_router(documents.router, prefix="/documents", tags=["Research Documents & PDF RAG"])
+api_router.include_router(audit.router, prefix="/audit", tags=["Security Audit Log"])
+api_router.include_router(signals.router, prefix="/signals", tags=["Direct Machine Signals & Cyber Defense"])
+

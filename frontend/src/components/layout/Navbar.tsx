@@ -1,14 +1,26 @@
 import React from 'react';
-import { ShieldCheck, Cpu, Sun, Moon, Radio, Activity } from 'lucide-react';
+import { ShieldCheck, Cpu, Sun, Moon, Radio, Activity, Search, Sparkles } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 interface NavbarProps {
   isConnected: boolean;
   activeAlertsCount: number;
   onNavigateHome?: () => void;
+  onOpenSearch?: () => void;
+  onToggleCopilot?: () => void;
+  isCopilotOpen?: boolean;
+  activeContext?: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ isConnected, activeAlertsCount, onNavigateHome }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  isConnected,
+  activeAlertsCount,
+  onNavigateHome,
+  onOpenSearch,
+  onToggleCopilot,
+  isCopilotOpen,
+  activeContext = 'research'
+}) => {
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -34,49 +46,78 @@ export const Navbar: React.FC<NavbarProps> = ({ isConnected, activeAlertsCount, 
         </div>
       </div>
 
-      {/* Status Badges & Controls */}
-      <div className="flex items-center space-x-4">
-        {/* Edge AI Engine Status */}
-        <div className="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-secondary text-xs font-medium border">
-          <Cpu className="h-4 w-4 text-medical-teal" />
-          <span>Local Ollama SLM:</span>
-          <span className="text-emerald-500 font-semibold">Active</span>
-        </div>
+      {/* Global Search Bar (Trigger) */}
+      {onOpenSearch && (
+        <button
+          onClick={onOpenSearch}
+          className="hidden md:flex items-center space-x-2 bg-secondary/80 hover:bg-secondary border text-muted-foreground hover:text-foreground px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all max-w-sm w-72 justify-between"
+        >
+          <div className="flex items-center space-x-2 truncate">
+            <Search className="h-3.5 w-3.5 text-medical-teal" />
+            <span className="truncate">Search incidents, devices, research...</span>
+          </div>
+          <kbd className="text-[10px] font-mono bg-card px-1.5 py-0.5 rounded border text-muted-foreground">
+            ⌘K
+          </kbd>
+        </button>
+      )}
 
-        {/* WebSocket Stream Status */}
-        <div className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-secondary text-xs font-medium border">
-          <Radio className={`h-4 w-4 ${isConnected ? 'text-emerald-500 animate-pulse' : 'text-amber-500'}`} />
-          <span className="hidden sm:inline">Telemetry Stream:</span>
-          <span className={isConnected ? 'text-emerald-500 font-semibold' : 'text-amber-500 font-semibold'}>
-            {isConnected ? 'LIVE (1.5s)' : 'Connecting...'}
+      {/* Status Badges & Controls */}
+      <div className="flex items-center space-x-3">
+        {/* AI Copilot Toggle Button */}
+        {onToggleCopilot && (
+          <button
+            onClick={onToggleCopilot}
+            className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+              isCopilotOpen
+                ? 'bg-medical-teal text-white shadow-glow-teal border-medical-teal'
+                : 'bg-secondary/80 hover:bg-secondary text-foreground hover:border-medical-teal/50'
+            }`}
+          >
+            <Sparkles className={`h-3.5 w-3.5 ${isCopilotOpen ? 'text-white' : 'text-medical-teal'}`} />
+            <span className="hidden sm:inline">AI Copilot</span>
+            <span className={`text-[9px] uppercase px-1.5 py-0.2 rounded font-mono ${
+              isCopilotOpen ? 'bg-white/20 text-white' : 'bg-medical-teal/15 text-medical-teal'
+            }`}>
+              {activeContext}
+            </span>
+          </button>
+        )}
+
+        {/* Telemetry Status */}
+        <div className="hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-secondary text-xs font-medium border">
+          <Radio className={`h-3.5 w-3.5 ${isConnected ? 'text-emerald-500 animate-pulse' : 'text-amber-500'}`} />
+          <span className="hidden sm:inline">Telemetry:</span>
+          <span className={isConnected ? 'text-emerald-500 font-semibold font-mono' : 'text-amber-500 font-semibold font-mono'}>
+            {isConnected ? 'LIVE' : 'Connecting'}
           </span>
         </div>
 
         {/* Active Alert Badge */}
         {activeAlertsCount > 0 && (
-          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-500 border border-rose-500/20 text-xs font-semibold animate-pulse">
-            <Activity className="h-4 w-4" />
-            <span>{activeAlertsCount} Active Incidents</span>
+          <div className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20 text-xs font-semibold animate-pulse">
+            <Activity className="h-3.5 w-3.5" />
+            <span>{activeAlertsCount} Alerts</span>
           </div>
         )}
 
         {/* Dark/Light Mode Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2.5 rounded-xl border bg-secondary/80 hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+          className="p-2 rounded-xl border bg-secondary/80 hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
           title="Toggle Dark/Light Mode"
         >
           {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-slate-700" />}
         </button>
 
         {/* User Profile */}
-        <div className="flex items-center space-x-2 pl-2 border-l">
-          <div className="h-8 w-8 rounded-full bg-medical-navy text-white font-bold text-xs flex items-center justify-center">
-            HA
+        <div className="hidden xl:flex items-center space-x-2 pl-2 border-l">
+          <div className="h-8 w-8 rounded-full bg-medical-teal/20 text-medical-teal font-bold text-xs flex items-center justify-center border border-medical-teal/40">
+            ES
           </div>
-          <div className="hidden lg:block text-xs">
-            <div className="font-semibold">Hospital Admin</div>
-            <div className="text-[10px] text-muted-foreground">Biomedical Security</div>
+          <div className="text-xs">
+            <div className="font-semibold">Security Officer</div>
+            <div className="text-[10px] text-muted-foreground">Smart ICU Ward</div>
           </div>
         </div>
       </div>

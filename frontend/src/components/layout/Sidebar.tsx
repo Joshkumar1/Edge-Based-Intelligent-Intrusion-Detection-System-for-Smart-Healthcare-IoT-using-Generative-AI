@@ -1,7 +1,7 @@
 import React from 'react';
-import { LayoutDashboard, AlertTriangle, Monitor, BarChart3, Zap, ShieldAlert, FileText, Settings } from 'lucide-react';
+import { LayoutDashboard, AlertTriangle, Monitor, BarChart3, Zap, ShieldAlert, FileText, Settings, Activity } from 'lucide-react';
 
-export type TabType = 'dashboard' | 'alerts' | 'devices' | 'analytics' | 'simulator' | 'docs';
+export type TabType = 'dashboard' | 'signals' | 'alerts' | 'devices' | 'analytics' | 'simulator' | 'docs';
 
 interface SidebarProps {
   activeTab: TabType;
@@ -12,12 +12,14 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, activeAlertsCount }) => {
   const navItems = [
     { id: 'dashboard', label: 'Overview Dashboard', icon: LayoutDashboard },
+    { id: 'signals', label: 'Machine Signals & Defense', icon: Activity },
     { id: 'alerts', label: 'Alert Center', icon: AlertTriangle, badge: activeAlertsCount },
     { id: 'devices', label: 'Device Inventory', icon: Monitor },
     { id: 'analytics', label: 'ML Analytics', icon: BarChart3 },
     { id: 'simulator', label: 'Attack Simulator', icon: Zap },
     { id: 'docs', label: 'IEEE Research Docs', icon: FileText },
   ];
+
 
   return (
     <aside className="w-64 border-r bg-card/60 backdrop-blur-md flex flex-col justify-between p-4 transition-colors">

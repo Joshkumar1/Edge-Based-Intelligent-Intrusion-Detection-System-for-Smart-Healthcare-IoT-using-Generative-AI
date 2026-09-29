@@ -51,10 +51,15 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground selection:bg-medical-teal selection:text-white;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+  ::selection {
+    background-color: #0D9488;
+    color: #ffffff;
   }
 }
 

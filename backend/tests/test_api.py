@@ -57,5 +57,8 @@ def test_packet_analysis():
     data = response.json()
     assert data["is_anomaly"] is True
     assert data["threat_type"] == "DICOM Ransomware"
-    assert data["explanation"] is not None
-    assert data["mitigation"] is not None
+    assert data["target_device_id"] == "DEV-RAD-405"
+    assert data["explanation_status"] == "PENDING"
+    assert data["detection_latency_ms"] > 0
+    assert data["event_id"] is not None
+

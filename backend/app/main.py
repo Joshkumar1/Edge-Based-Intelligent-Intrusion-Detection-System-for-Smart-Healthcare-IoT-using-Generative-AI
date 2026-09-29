@@ -12,9 +12,14 @@ from app.api.v1.router import api_router
 from app.websockets.stream_manager import manager
 from app.models.device import Device, DeviceCategory, DeviceStatus
 from app.models.alert import Alert
+from app.models.user import User
+from app.models.audit_log import AuditLog
+from app.core.security import get_password_hash
 from app.services.traffic_sim import traffic_simulator
-from app.services.ml_engine import ml_engine
-from app.services.llm_service import llm_assistant
+from app.services.security_pipeline import security_pipeline
+from app.services.machine_signals import collector_manager
+from app.schemas.security_event import TrafficOrigin
+
 
 
 def seed_initial_data(db: Session):
@@ -129,29 +134,50 @@ def seed_initial_data(db: Session):
         db.commit()
         print("[+] Seeded initial baseline security alerts.")
 
+    if db.query(User).count() == 0:
+        users = [
+            User(
+                username="admin",
+                email="admin@edgeshield.hospital.lan",
+                full_name="Hospital Chief Security Admin",
+                hashed_password=get_password_hash("admin123"),
+                role="hospital_admin",
+                is_active=True
+            ),
+            User(
+                username="operator",
+                email="operator@edgeshield.hospital.lan",
+                full_name="Lead Security Operator",
+                hashed_password=get_password_hash("operator123"),
+                role="security_operator",
+                is_active=True
+            ),
+            User(
+                username="auditor",
+                email="auditor@edgeshield.hospital.lan",
+                full_name="Compliance Auditor",
+                hashed_password=get_password_hash("auditor123"),
+                role="read_only_auditor",
+                is_active=True
+            ),
+        ]
+        db.add_all(users)
+        db.commit()
+        print("[+] Seeded initial security users (admin, operator, auditor).")
+
 
 async def live_telemetry_stream():
-    """Background loop generating live telemetry broadcasts to connected WebSockets."""
+    """Background loop feeding live telemetry through the canonical security pipeline."""
     while True:
         await asyncio.sleep(2.0)
         if manager.active_connections:
-            simulated = traffic_simulator.generate_packet()
-            is_anomaly, anomaly_score, threat_type, confidence, severity, key_features = ml_engine.predict_packet(simulated)
-            
-            payload = {
-                "type": "TELEMETRY_PACKET",
-                "timestamp": datetime.utcnow().isoformat(),
-                "packet": simulated,
-                "detection": {
-                    "is_anomaly": is_anomaly,
-                    "anomaly_score": anomaly_score,
-                    "threat_type": threat_type,
-                    "confidence": confidence,
-                    "severity": severity,
-                    "key_features": key_features
-                }
-            }
-            await manager.broadcast(payload)
+            try:
+                simulated = traffic_simulator.generate_packet()
+                # Run through the canonical security pipeline
+                security_pipeline.ingest(simulated, origin=TrafficOrigin.LIVE)
+            except Exception:
+                pass
+
 
 
 @asynccontextmanager
@@ -165,9 +191,11 @@ async def lifespan(app: FastAPI):
         db.close()
         
     stream_task = asyncio.create_task(live_telemetry_stream())
+    await collector_manager.start_background_workers()
     yield
     # Shutdown
     stream_task.cancel()
+    await collector_manager.stop_background_workers()
 
 
 app = FastAPI(

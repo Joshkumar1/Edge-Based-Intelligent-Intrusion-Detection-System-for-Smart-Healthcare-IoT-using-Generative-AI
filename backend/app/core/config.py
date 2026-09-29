@@ -34,6 +34,12 @@ class Settings(BaseSettings):
     MODEL_DIR: str = "./ml_pipeline/models"
     ANOMALY_THRESHOLD: float = -0.15
     
+    # Edge Enforcement Configuration
+    EDGE_ENFORCEMENT_MODE: str = "simulation"  # "simulation" | "host_firewall"
+    EDGE_FIREWALL_BACKEND: str = "iptables"   # "iptables" | "nftables"
+    EDGE_FIREWALL_CHAIN: str = "FORWARD"       # "FORWARD" | "INPUT"
+    EDGE_FIREWALL_TIMEOUT_SECONDS: int = 5
+    
     model_config = SettingsConfigDict(case_sensitive=True, env_file=".env")
 
 

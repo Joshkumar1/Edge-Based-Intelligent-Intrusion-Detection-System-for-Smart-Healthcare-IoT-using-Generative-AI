@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { AlertTriangle, Filter, Search, Sparkles, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, Filter, Search, Sparkles, CheckCircle2, ShieldAlert, Bot } from 'lucide-react';
 import { Alert } from '../../types';
 
 interface AlertCenterProps {
   alerts: Alert[];
   onSelectAlert: (alert: Alert) => void;
   onUpdateStatus: (alertId: string, status: string) => void;
+  onInvestigateCopilot?: (alert: Alert) => void;
 }
 
-export const AlertCenter: React.FC<AlertCenterProps> = ({ alerts, onSelectAlert, onUpdateStatus }) => {
+export const AlertCenter: React.FC<AlertCenterProps> = ({
+  alerts,
+  onSelectAlert,
+  onUpdateStatus,
+  onInvestigateCopilot
+}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [severityFilter, setSeverityFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
@@ -26,7 +32,7 @@ export const AlertCenter: React.FC<AlertCenterProps> = ({ alerts, onSelectAlert,
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
         <div>
@@ -84,31 +90,40 @@ export const AlertCenter: React.FC<AlertCenterProps> = ({ alerts, onSelectAlert,
         </div>
       </div>
 
-      {/* Alert Feed List */}
-      <div className="space-y-3">
+      {/* Alert List */}
+      <div className="space-y-4">
         {filteredAlerts.length === 0 ? (
           <div className="p-12 rounded-2xl bg-card border text-center space-y-3">
             <ShieldAlert className="h-10 w-10 text-muted-foreground mx-auto" />
-            <div className="font-bold text-base">No Matching Intrusion Incidents</div>
-            <p className="text-xs text-muted-foreground">Adjust filters or search parameters.</p>
+            <div className="text-base font-bold">No active security incidents detected.</div>
+            <p className="text-xs text-muted-foreground">
+              All hospital subnets are operating within normal baseline telemetry.
+            </p>
           </div>
         ) : (
           filteredAlerts.map((alert) => (
             <div
               key={alert.alert_id}
-              className="p-5 rounded-2xl bg-card border shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-medical-teal/40 transition-all"
+              className={`p-5 rounded-2xl bg-card border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-subtle ${
+                alert.status === 'NEW' ? 'border-l-4 border-l-rose-500' : ''
+              }`}
             >
               <div className="flex items-start space-x-4">
                 <div
-                  className={`p-3 rounded-2xl text-white font-bold mt-1 ${
-                    alert.severity === 'CRITICAL' ? 'bg-rose-500 shadow-glow-red' : 'bg-amber-500'
+                  className={`p-3 rounded-xl text-white font-bold shrink-0 ${
+                    alert.severity === 'CRITICAL'
+                      ? 'bg-rose-500 shadow-glow-red'
+                      : alert.severity === 'HIGH'
+                      ? 'bg-amber-500'
+                      : 'bg-blue-500'
                   }`}
                 >
-                  <AlertTriangle className="h-6 w-6" />
+                  <AlertTriangle className="h-5 w-5" />
                 </div>
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-3">
-                    <span className="font-extrabold text-base text-foreground">{alert.threat_type}</span>
+
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-bold text-base text-foreground">{alert.threat_type}</h3>
                     <span
                       className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
                         alert.severity === 'CRITICAL'
@@ -135,12 +150,23 @@ export const AlertCenter: React.FC<AlertCenterProps> = ({ alerts, onSelectAlert,
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3 self-end md:self-center border-t md:border-t-0 pt-3 md:pt-0">
+              <div className="flex items-center space-x-2.5 self-end md:self-center border-t md:border-t-0 pt-3 md:pt-0">
+                {onInvestigateCopilot && (
+                  <button
+                    onClick={() => onInvestigateCopilot(alert)}
+                    className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-xs border transition-all"
+                    title="Investigate with AI Copilot"
+                  >
+                    <Bot className="h-3.5 w-3.5 text-medical-teal" />
+                    <span>Copilot Triage</span>
+                  </button>
+                )}
+
                 <button
                   onClick={() => onSelectAlert(alert)}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-medical-teal text-white font-semibold text-xs shadow-glow-teal hover:opacity-90 transition-all"
+                  className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-medical-teal text-white font-semibold text-xs shadow-glow-teal hover:opacity-90 transition-all"
                 >
-                  <Sparkles className="h-4 w-4" />
+                  <Sparkles className="h-3.5 w-3.5" />
                   <span>Explain AI & Mitigation</span>
                 </button>
 
@@ -150,7 +176,7 @@ export const AlertCenter: React.FC<AlertCenterProps> = ({ alerts, onSelectAlert,
                     className="p-2 rounded-xl border bg-secondary hover:bg-emerald-500/10 hover:text-emerald-500 transition-colors"
                     title="Quick Mark Mitigated"
                   >
-                    <CheckCircle2 className="h-5 w-5" />
+                    <CheckCircle2 className="h-4 w-4" />
                   </button>
                 )}
               </div>

@@ -28,8 +28,17 @@ class Alert(Base):
     clinical_explanation = Column(Text, nullable=True)  # LLM Human explanation
     clinical_impact = Column(Text, nullable=True)  # Hospital operational impact
     recommended_mitigation = Column(Text, nullable=True)  # Step-by-step containment instructions
+    explanation_status = Column(String, default="PENDING", index=True)  # PENDING, GENERATING, COMPLETED, FAILED, UNAVAILABLE
+    ai_latency_ms = Column(Float, nullable=True)
+
+    # Event Correlation & Aggregation
+    correlation_id = Column(String, index=True, nullable=True)
+    packet_count = Column(Integer, default=1)
+    last_seen = Column(DateTime, default=datetime.utcnow, index=True)
+    traffic_origin = Column(String, default="LIVE")  # LIVE, SIMULATOR, REPLAYED, GATEWAY
     
     # Resolution Status
     status = Column(String, default="NEW")  # NEW, INVESTIGATING, MITIGATED, FALSE_POSITIVE
     resolved_by = Column(String, nullable=True)
     resolved_at = Column(DateTime, nullable=True)
+

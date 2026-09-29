@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 
 
 class DeviceBase(BaseModel):
@@ -33,5 +33,26 @@ class DeviceOut(DeviceBase):
     last_seen: datetime
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+
+
+class DeviceIsolationRequest(BaseModel):
+    justification: Optional[str] = "Operator initiated clinical containment"
+    impact_assessment: Optional[str] = "Clinical telemetry isolation verified by operator"
+    correlation_id: Optional[str] = None
+
+
+class DeviceEnforcementResponse(BaseModel):
+    device_id: str
+    requested_action: str  # "isolate" | "reconnect"
+    device_status: str     # "Isolated" | "Active"
+    status: str            # Backward-compatibility alias for device_status
+    enforcement_mode: str  # "HOST_FIREWALL" | "SIMULATION"
+    enforcement_status: str # "ENFORCED" | "SIMULATED" | "FAILED" | "UNSUPPORTED"
+    enforcement_message: str
+    audit_log_id: str
+    performed_by: str
+    timestamp: datetime
+    device: DeviceOut
+
+    model_config = ConfigDict(from_attributes=True)

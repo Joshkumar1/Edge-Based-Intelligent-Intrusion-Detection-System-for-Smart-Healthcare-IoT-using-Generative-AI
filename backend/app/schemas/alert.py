@@ -20,12 +20,19 @@ class AlertOut(BaseModel):
     clinical_explanation: Optional[str] = None
     clinical_impact: Optional[str] = None
     recommended_mitigation: Optional[str] = None
+    explanation_status: Optional[str] = "PENDING"
+    ai_latency_ms: Optional[float] = None
+    correlation_id: Optional[str] = None
+    packet_count: Optional[int] = 1
+    last_seen: Optional[datetime] = None
+    traffic_origin: Optional[str] = "LIVE"
     status: str
     resolved_by: Optional[str] = None
     resolved_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
+
 
 
 class AlertUpdateStatus(BaseModel):
