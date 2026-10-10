@@ -52,4 +52,7 @@ frontend/.vite/
 *.db-wal
 backend/uploads/
 
+# Raw Datasets
+datasets/
+
 
