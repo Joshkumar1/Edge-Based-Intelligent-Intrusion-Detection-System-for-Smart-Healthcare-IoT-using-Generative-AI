@@ -55,4 +55,7 @@ backend/uploads/
 # Raw Datasets
 datasets/
 
+# Preprocessed CSV data splits (reproducible via ml_pipeline/data_ingestion/feature_extractor.py)
+ml_pipeline/preprocessed/**/*.csv
+
 

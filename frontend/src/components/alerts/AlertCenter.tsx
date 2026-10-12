@@ -19,10 +19,11 @@ export const AlertCenter: React.FC<AlertCenterProps> = ({
   const [severityFilter, setSeverityFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
 
-  const filteredAlerts = alerts.filter((alert) => {
+  const alertList = alerts || [];
+  const filteredAlerts = alertList.filter((alert) => {
     const matchesSearch =
-      alert.threat_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      alert.source_ip.includes(searchTerm) ||
+      (alert.threat_type || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (alert.source_ip || '').includes(searchTerm) ||
       (alert.target_device_id && alert.target_device_id.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesSeverity = severityFilter === 'ALL' || alert.severity === severityFilter;

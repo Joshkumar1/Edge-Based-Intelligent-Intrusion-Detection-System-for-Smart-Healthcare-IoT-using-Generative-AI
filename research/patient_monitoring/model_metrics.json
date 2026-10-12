@@ -1,0 +1,66 @@
+{
+  "Majority_Class_Baseline": {
+    "model_name": "Majority_Class_Baseline",
+    "test_sample_size": 35,
+    "test_positive_count": 5,
+    "test_negative_count": 30,
+    "confusion_matrix": {
+      "true_negatives": 30,
+      "false_positives": 0,
+      "false_negatives": 5,
+      "true_positives": 0
+    },
+    "accuracy": 0.8571,
+    "sensitivity_recall": 0.0,
+    "specificity": 1.0,
+    "precision": 0.0,
+    "roc_auc": 0.5,
+    "pr_auc": 0.1429,
+    "brier_score": 0.1226
+  },
+  "L2_Logistic_Regression": {
+    "model_name": "L2_Logistic_Regression",
+    "test_sample_size": 35,
+    "test_positive_count": 5,
+    "test_negative_count": 30,
+    "confusion_matrix": {
+      "true_negatives": 26,
+      "false_positives": 4,
+      "false_negatives": 2,
+      "true_positives": 3
+    },
+    "accuracy": 0.8286,
+    "sensitivity_recall": 0.6,
+    "specificity": 0.8667,
+    "precision": 0.4286,
+    "roc_auc": 0.76,
+    "pr_auc": 0.616,
+    "brier_score": 0.1268,
+    "5_fold_grouped_cv": {
+      "out_of_fold_roc_auc": 0.5325,
+      "out_of_fold_pr_auc": 0.3083,
+      "out_of_fold_accuracy": 0.75,
+      "out_of_fold_sensitivity": 0.3333,
+      "out_of_fold_specificity": 0.8136
+    }
+  },
+  "Random_Forest_Baseline": {
+    "model_name": "Random_Forest_Baseline",
+    "test_sample_size": 35,
+    "test_positive_count": 5,
+    "test_negative_count": 30,
+    "confusion_matrix": {
+      "true_negatives": 29,
+      "false_positives": 1,
+      "false_negatives": 2,
+      "true_positives": 3
+    },
+    "accuracy": 0.9143,
+    "sensitivity_recall": 0.6,
+    "specificity": 0.9667,
+    "precision": 0.75,
+    "roc_auc": 0.7667,
+    "pr_auc": 0.4894,
+    "brier_score": 0.1395
+  }
+}

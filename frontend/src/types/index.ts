@@ -285,3 +285,81 @@ export interface MachineSignalHistoryItem {
   alert_id?: string;
 }
 
+// Patient Vital-Sign Monitoring & Risk Research Types
+export interface VitalSigns {
+  heart_rate?: number;
+  respiratory_rate?: number;
+  spo2?: number;
+  systolic_bp?: number;
+  diastolic_bp?: number;
+  mean_bp?: number;
+  temperature?: number;
+  temperature_unit?: string;
+}
+
+export interface VitalSignValidationResult {
+  valid: boolean;
+  temperature_celsius?: number;
+  validation_messages: string[];
+  quality_flags: string[];
+  missing_measurements: string[];
+}
+
+export interface MortalityRiskAssessment {
+  risk_score?: number | null;
+  risk_category: 'LOW' | 'ELEVATED' | 'HIGH' | 'INDETERMINATE';
+  model_version: string;
+  experimental_research_only: boolean;
+  clinical_disclaimer: string;
+  limitations: string[];
+  quality_flags: string[];
+  missing_measurements: string[];
+  validated_vitals_celsius: Record<string, number | null>;
+}
+
+export interface CohortAuditSummary {
+  pipeline_stage: string;
+  dataset: string;
+  prediction_time_definition: string;
+  counts_before_filtering: {
+    total_icu_stays: number;
+    total_unique_patients: number;
+    stays_linked_to_outcomes: number;
+    missing_outcomes: number;
+  };
+  exclusions: {
+    total_excluded_stays: number;
+    deaths_before_or_at_prediction_time: number;
+    deaths_before_pred_stays?: number[];
+    discharged_alive_before_prediction_time: number;
+    discharged_alive_before_pred_stays?: number[];
+    total_hospital_discharges_before_prediction_time: number;
+  };
+  eligible_cohort: {
+    eligible_icu_stays: number;
+    unique_eligible_patients: number;
+    eligible_deaths_stays: number;
+    eligible_survivors_stays: number;
+    eligible_deaths_unique_patients: number;
+    eligible_survivors_unique_patients: number;
+    patients_with_mixed_outcomes_across_admissions?: number;
+    class_prevalence_percent: number;
+  };
+  coverage_metrics: {
+    eligible_stays_with_core_vitals: number;
+    eligible_stays_with_18h_distinct_observations: number;
+    eligible_stays_with_24h_distinct_observations: number;
+    median_measurements_per_stay: number;
+    median_distinct_hours_per_stay: number;
+  };
+  model_metrics?: Record<string, any>;
+}
+
+export interface SamplePatientRecord {
+  stay_id: number;
+  patient_label: string;
+  vitals: VitalSigns;
+  hours_monitored: number;
+  expected_risk_category: string;
+}
+

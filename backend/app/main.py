@@ -1,6 +1,6 @@
 import asyncio
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -225,6 +225,20 @@ def root():
         "status": "OPERATIONAL",
         "version": settings.VERSION,
         "docs_url": "/docs"
+    }
+
+
+@app.get("/health", summary="Service Health Check")
+def health():
+    return {
+        "status": "healthy",
+        "project": settings.PROJECT_NAME,
+        "version": settings.VERSION,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "modules": {
+            "intrusion_detection": "ONLINE",
+            "patient_monitoring": "ONLINE"
+        }
     }
 
 

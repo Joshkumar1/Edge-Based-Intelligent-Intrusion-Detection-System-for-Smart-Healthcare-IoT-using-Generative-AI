@@ -23,17 +23,22 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
   // Update telemetry graph data as live packets arrive
   useEffect(() => {
     if (lastTelemetryEvent) {
-      const { packet, detection } = lastTelemetryEvent;
+      // Robustly extract packet and detection whether at root or inside payload envelope
+      const packet = lastTelemetryEvent.packet || (lastTelemetryEvent as any).payload?.packet;
+      const detection = lastTelemetryEvent.detection || (lastTelemetryEvent as any).payload?.detection;
+
+      if (!packet) return;
+
       const timeStr = new Date().toLocaleTimeString([], { hour12: false, minute: '2-digit', second: '2-digit' });
       setTelemetryHistory((prev) => {
         const updated = [
           ...prev,
           {
             time: timeStr,
-            packetRate: packet.packet_rate,
-            byteRate: Math.round(packet.byte_rate / 10),
-            entropy: packet.entropy * 10,
-            isAnomaly: detection.is_anomaly ? 100 : 0,
+            packetRate: packet.packet_rate ?? 0,
+            byteRate: Math.round((packet.byte_rate ?? 0) / 10),
+            entropy: (packet.entropy ?? 0) * 10,
+            isAnomaly: detection?.is_anomaly ? 100 : 0,
           },
         ];
         return updated.slice(-20); // Keep last 20 data points
@@ -138,7 +143,13 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
           </div>
           <div>
             <div className="text-3xl font-extrabold text-emerald-500">
-              {stats.detection_latency_ms != null ? `${stats.detection_latency_ms.toFixed(2)} ms` : (lastTelemetryEvent?.detection_latency_ms != null ? `${lastTelemetryEvent.detection_latency_ms.toFixed(2)} ms` : '< 1.0 ms')}
+              {stats.detection_latency_ms != null
+                ? `${stats.detection_latency_ms.toFixed(2)} ms`
+                : lastTelemetryEvent?.detection_latency_ms != null
+                ? `${lastTelemetryEvent.detection_latency_ms.toFixed(2)} ms`
+                : (lastTelemetryEvent as any)?.payload?.detection_latency_ms != null
+                ? `${(lastTelemetryEvent as any).payload.detection_latency_ms.toFixed(2)} ms`
+                : '< 1.0 ms'}
             </div>
             <div className="text-xs text-muted-foreground font-medium flex items-center mt-1">
               <span>{stats.ai_latency_ms ? `Edge ML (AI: ${stats.ai_latency_ms.toFixed(0)}ms)` : 'Edge Pipeline Verified'}</span>
@@ -233,14 +244,14 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
             <p className="text-xs text-muted-foreground">Select any incident to open the Local Generative AI Clinical Explainer.</p>
           </div>
           <span className="text-xs font-semibold text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full">
-            {alerts.length} Total Alerts
+            {(alerts || []).length} Total Alerts
           </span>
         </div>
 
         <div className="space-y-3">
-          {alerts.map((alert) => (
+          {(alerts || []).slice(0, 10).map((alert, idx) => (
             <div
-              key={alert.alert_id}
+              key={alert.alert_id || `alert-${idx}`}
               onClick={() => onSelectAlert(alert)}
               className="p-4 rounded-xl border bg-secondary/40 hover:bg-secondary transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-medical-teal/50"
             >
@@ -273,7 +284,9 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
               <div className="flex items-center space-x-3 self-end md:self-center">
                 <div className="text-right text-xs">
                   <div className="font-mono text-muted-foreground">{alert.source_ip} &rarr; {alert.destination_ip}</div>
-                  <div className="text-[10px] text-muted-foreground">{new Date(alert.timestamp).toLocaleTimeString()}</div>
+                  <div className="text-[10px] text-muted-foreground">
+                    {alert.timestamp ? new Date(alert.timestamp).toLocaleTimeString() : 'Recent'}
+                  </div>
                 </div>
                 <button className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-medical-teal text-white font-semibold text-xs shadow-glow-teal hover:opacity-90 transition-all">
                   <Sparkles className="h-3.5 w-3.5" />

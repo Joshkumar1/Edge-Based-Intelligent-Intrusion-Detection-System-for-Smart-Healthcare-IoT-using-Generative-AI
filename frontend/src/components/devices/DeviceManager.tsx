@@ -15,11 +15,12 @@ export const DeviceManager: React.FC<DeviceManagerProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
 
-  const filteredDevices = devices.filter(
+  const deviceList = devices || [];
+  const filteredDevices = deviceList.filter(
     (dev) => selectedCategory === 'ALL' || dev.category === selectedCategory
   );
 
-  const categories = Array.from(new Set(devices.map((d) => d.category)));
+  const categories = Array.from(new Set(deviceList.map((d) => d.category)));
 
   return (
     <div className="space-y-6 animate-in fade-in">

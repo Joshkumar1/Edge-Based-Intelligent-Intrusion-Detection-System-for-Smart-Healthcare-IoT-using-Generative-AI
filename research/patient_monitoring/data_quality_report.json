@@ -1,0 +1,84 @@
+{
+  "checks": {
+    "no_duplicate_stay_ids": {
+      "passed": true,
+      "dup_features": 0,
+      "dup_labels": 0,
+      "dup_metadata": 0
+    },
+    "strict_id_alignment": {
+      "passed": true,
+      "total_rows": 136
+    },
+    "outcome_labels_valid": {
+      "passed": true,
+      "missing_count": 0,
+      "invalid_count": 0
+    },
+    "zero_target_leakage_columns": {
+      "passed": true,
+      "leaked_columns": []
+    },
+    "zero_temporal_leakage": {
+      "passed": true,
+      "post_pred_measurements_safely_ignored": 50432,
+      "stays_with_temporal_mismatch": 0
+    },
+    "physiological_ranges": {
+      "heart_rate": {
+        "below_min_count": 0,
+        "below_min_values": [],
+        "above_max_count": 0,
+        "above_max_values": []
+      },
+      "respiratory_rate": {
+        "below_min_count": 0,
+        "below_min_values": [],
+        "above_max_count": 0,
+        "above_max_values": []
+      },
+      "spo2": {
+        "below_min_count": 0,
+        "below_min_values": [],
+        "above_max_count": 0,
+        "above_max_values": []
+      },
+      "systolic_bp": {
+        "below_min_count": 0,
+        "below_min_values": [],
+        "above_max_count": 0,
+        "above_max_values": []
+      },
+      "diastolic_bp": {
+        "below_min_count": 1,
+        "below_min_values": [
+          19.0
+        ],
+        "above_max_count": 0,
+        "above_max_values": []
+      },
+      "mean_bp": {
+        "below_min_count": 1,
+        "below_min_values": [
+          22.0
+        ],
+        "above_max_count": 0,
+        "above_max_values": []
+      },
+      "temperature_celsius": {
+        "below_min_count": 0,
+        "below_min_values": [],
+        "above_max_count": 0,
+        "above_max_values": []
+      }
+    },
+    "class_balance": {
+      "positive_deaths": 18,
+      "negative_survivors": 118,
+      "prevalence_pct": 13.24,
+      "unique_patients_pos": 14,
+      "unique_patients_neg": 88
+    }
+  },
+  "issues": []
+}

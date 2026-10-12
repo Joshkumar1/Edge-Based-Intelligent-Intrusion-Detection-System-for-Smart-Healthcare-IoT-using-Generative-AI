@@ -1,0 +1,288 @@
+{
+  "dataset_provenance": {
+    "filepath": "/Users/govathotyjoshkumar/Code Files/MP/ml_pipeline/data_ingestion/test_sample_edge_iiotset.csv",
+    "filename": "test_sample_edge_iiotset.csv",
+    "file_size_mb": 0.04,
+    "file_size_gb": 0.0,
+    "is_sampled": false,
+    "analyzed_rows": 500,
+    "total_columns": 15,
+    "memory_footprint_mb": 0.1
+  },
+  "data_hygiene": {
+    "duplicate_rows": 1,
+    "duplicate_pct": 0.2,
+    "total_nan_cells": 2,
+    "nan_cell_ratio_pct": 0.027,
+    "total_pos_inf_cells": 1,
+    "total_neg_inf_cells": 1,
+    "columns_with_missing_or_inf_count": 2,
+    "columns_with_missing_details": [
+      {
+        "column": "frame.len",
+        "missing_count": 2,
+        "missing_pct": 0.4,
+        "pos_inf_count": 0,
+        "neg_inf_count": 0
+      },
+      {
+        "column": "tcp.len",
+        "missing_count": 0,
+        "missing_pct": 0.0,
+        "pos_inf_count": 1,
+        "neg_inf_count": 1
+      }
+    ],
+    "constant_columns": [
+      "constant_dummy_col"
+    ],
+    "near_constant_columns": []
+  },
+  "labels_and_classes": {
+    "detected_target_column": "Attack_type",
+    "num_classes": 10,
+    "distribution": [
+      {
+        "label": "Normal",
+        "count": 200,
+        "percentage": 40.0
+      },
+      {
+        "label": "DDoS_UDP",
+        "count": 68,
+        "percentage": 13.6
+      },
+      {
+        "label": "DDoS_ICMP",
+        "count": 43,
+        "percentage": 8.6
+      },
+      {
+        "label": "SQL_injection",
+        "count": 37,
+        "percentage": 7.4
+      },
+      {
+        "label": "MITM",
+        "count": 35,
+        "percentage": 7.0
+      },
+      {
+        "label": "Port_Scanning",
+        "count": 34,
+        "percentage": 6.8
+      },
+      {
+        "label": "Ransomware",
+        "count": 28,
+        "percentage": 5.6
+      },
+      {
+        "label": "Uploading",
+        "count": 21,
+        "percentage": 4.2
+      },
+      {
+        "label": "Backdoor",
+        "count": 17,
+        "percentage": 3.4
+      },
+      {
+        "label": "Password",
+        "count": 17,
+        "percentage": 3.4
+      }
+    ],
+    "imbalance_ratio_majority_to_minority": 11.76
+  },
+  "protocol_analysis": {
+    "protocol_column": "ip.proto",
+    "top_protocols": [
+      {
+        "protocol": "TCP",
+        "count": 306,
+        "pct": 61.2
+      },
+      {
+        "protocol": "UDP",
+        "count": 115,
+        "pct": 23.0
+      },
+      {
+        "protocol": "ICMP",
+        "count": 53,
+        "pct": 10.6
+      },
+      {
+        "protocol": "MQTT",
+        "count": 26,
+        "pct": 5.2
+      }
+    ]
+  },
+  "canonical_features_compatibility": {
+    "packet_length": {
+      "status": "DERIVABLE_OR_ALIASED",
+      "matched_column": "frame.len",
+      "notes": "Matches candidate alias 'frame.len'."
+    },
+    "flow_duration": {
+      "status": "DERIVABLE_OR_ALIASED",
+      "matched_column": "frame.time_delta",
+      "notes": "Matches candidate alias 'frame.time_delta'."
+    },
+    "header_length": {
+      "status": "DERIVABLE_OR_ALIASED",
+      "matched_column": "ip.hdr_len",
+      "notes": "Matches candidate alias 'ip.hdr_len'."
+    },
+    "byte_rate": {
+      "status": "DERIVABLE",
+      "matched_column": null,
+      "notes": "Derivable from byte/packet count and flow_duration."
+    },
+    "packet_rate": {
+      "status": "DERIVABLE",
+      "matched_column": null,
+      "notes": "Derivable from byte/packet count and flow_duration."
+    },
+    "tcp_syn_flag": {
+      "status": "DERIVABLE_OR_ALIASED",
+      "matched_column": "tcp.flags.syn",
+      "notes": "Matches candidate alias 'tcp.flags.syn'."
+    },
+    "mqtt_msg_rate": {
+      "status": "DERIVABLE",
+      "matched_column": null,
+      "notes": "Derivable from MQTT flow counts or protocol timestamps."
+    },
+    "modbus_fn_code": {
+      "status": "UNAVAILABLE",
+      "matched_column": null,
+      "notes": "Valid Modbus function code field absent. mbtcp.trans_id/unit_id are identifiers and cannot be used as function codes. Non-Modbus records require protocol-specific encoding documentation."
+    },
+    "entropy": {
+      "status": "UNAVAILABLE",
+      "matched_column": null,
+      "notes": "Payload Shannon entropy is UNAVAILABLE in source tabular CSV. Must NOT be imputed with arbitrary constant in empirical benchmark. Config A requires documented missingness indicator; Config B excludes it."
+    }
+  },
+  "leakage_risk_audit": {
+    "total_flagged_columns": 2,
+    "flagged_columns": [
+      {
+        "column": "frame.time_delta",
+        "risk_type": "frame.time",
+        "warning": "Absolute capture timestamp leaks chronological scenario ordering."
+      },
+      {
+        "column": "Attack_label",
+        "risk_type": "attack",
+        "warning": "Direct label or secondary attack classification flag."
+      }
+    ]
+  },
+  "feature_configurations": {
+    "configuration_a": {
+      "name": "Configuration A (Canonical Edge Model)",
+      "description": "Preserves 9-feature runtime interface for edge sensor gateways.",
+      "features": [
+        "packet_length",
+        "flow_duration",
+        "header_length",
+        "byte_rate",
+        "packet_rate",
+        "tcp_syn_flag",
+        "mqtt_msg_rate",
+        "modbus_fn_code",
+        "entropy"
+      ],
+      "unavailable_features": [
+        "modbus_fn_code",
+        "entropy"
+      ],
+      "missingness_policy": "Explicit missingness indicator or training-fitted imputation; entropy marked unavailable."
+    },
+    "configuration_b": {
+      "name": "Configuration B (Expanded Empirical Benchmark)",
+      "description": "Uses strictly genuine, non-leaking features available in the dataset without fabrication.",
+      "candidate_feature_count": 11,
+      "candidate_features": [
+        "frame.len",
+        "ip.hdr_len",
+        "tcp.hdr_len",
+        "tcp.flags.syn",
+        "tcp.flags.ack",
+        "tcp.len",
+        "mqtt.msgtype",
+        "mqtt.len",
+        "mbtcp.unit_id",
+        "ip.proto",
+        "near_constant_col"
+      ],
+      "missingness_policy": "No synthetic constants; fitted imputation strictly on training split."
+    }
+  },
+  "column_inventory": [
+    {
+      "name": "frame.len",
+      "dtype": "float64"
+    },
+    {
+      "name": "frame.time_delta",
+      "dtype": "float64"
+    },
+    {
+      "name": "ip.hdr_len",
+      "dtype": "int64"
+    },
+    {
+      "name": "tcp.hdr_len",
+      "dtype": "int64"
+    },
+    {
+      "name": "tcp.flags.syn",
+      "dtype": "int64"
+    },
+    {
+      "name": "tcp.flags.ack",
+      "dtype": "int64"
+    },
+    {
+      "name": "tcp.len",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.msgtype",
+      "dtype": "int64"
+    },
+    {
+      "name": "mqtt.len",
+      "dtype": "int64"
+    },
+    {
+      "name": "mbtcp.unit_id",
+      "dtype": "int64"
+    },
+    {
+      "name": "ip.proto",
+      "dtype": "str"
+    },
+    {
+      "name": "constant_dummy_col",
+      "dtype": "int64"
+    },
+    {
+      "name": "near_constant_col",
+      "dtype": "int64"
+    },
+    {
+      "name": "Attack_label",
+      "dtype": "int64"
+    },
+    {
+      "name": "Attack_type",
+      "dtype": "str"
+    }
+  ]
+}

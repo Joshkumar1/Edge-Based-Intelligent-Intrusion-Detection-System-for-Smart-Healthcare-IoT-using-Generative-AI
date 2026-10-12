@@ -9,7 +9,8 @@ from app.api.v1.endpoints import (
     llm_assistant,
     documents,
     audit,
-    signals
+    signals,
+    patient_monitoring,
 )
 
 api_router = APIRouter()
@@ -24,4 +25,6 @@ api_router.include_router(llm_assistant.router, prefix="/llm", tags=["Local LLM 
 api_router.include_router(documents.router, prefix="/documents", tags=["Research Documents & PDF RAG"])
 api_router.include_router(audit.router, prefix="/audit", tags=["Security Audit Log"])
 api_router.include_router(signals.router, prefix="/signals", tags=["Direct Machine Signals & Cyber Defense"])
+api_router.include_router(patient_monitoring.router, prefix="/patient-monitoring", tags=["Patient Vital Monitoring & Risk Research"])
+
 

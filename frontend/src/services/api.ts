@@ -1,4 +1,15 @@
-import { Device, Alert, DashboardStats, MLMetrics, NetworkPacket } from '../types';
+import {
+  Device,
+  Alert,
+  DashboardStats,
+  MLMetrics,
+  NetworkPacket,
+  VitalSigns,
+  VitalSignValidationResult,
+  MortalityRiskAssessment,
+  CohortAuditSummary,
+  SamplePatientRecord,
+} from '../types';
 
 const API_BASE = '/api/v1';
 
@@ -341,6 +352,72 @@ export const apiService = {
         anti_replay_enforcement: true,
       };
     }
-  }
+  },
+
+  // Patient Vital-Sign Monitoring & Hospital Mortality Risk Research API
+  async getPatientMonitoringStatus(): Promise<any> {
+    try {
+      const res = await fetch(`${API_BASE}/patient-monitoring/status`);
+      if (!res.ok) throw new Error('Failed to fetch status');
+      return await res.json();
+    } catch {
+      return {
+        module: 'Patient Vital-Sign Monitoring & Hospital Mortality Risk',
+        status: 'OFFLINE',
+        model_loaded: false,
+        model_version: 'UNAVAILABLE',
+        dataset: 'MIMIC-IV Clinical Database Demo 2.2',
+        mode: 'Research & Engineering Verification Only',
+      };
+    }
+  },
+
+  async validatePatientVitals(vitals: VitalSigns): Promise<VitalSignValidationResult> {
+    const res = await fetch(`${API_BASE}/patient-monitoring/validate-vitals`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(vitals),
+    });
+    if (!res.ok) throw new Error('Failed to validate patient vitals');
+    return await res.json();
+  },
+
+  async assessMortalityRisk(
+    vitals: VitalSigns,
+    hoursMonitored: number = 24.0,
+    stayId?: number
+  ): Promise<MortalityRiskAssessment> {
+    const res = await fetch(`${API_BASE}/patient-monitoring/assess-risk`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        stay_id: stayId,
+        vitals,
+        hours_monitored: hoursMonitored,
+      }),
+    });
+    if (!res.ok) throw new Error('Failed to assess mortality risk');
+    return await res.json();
+  },
+
+  async getCohortSummary(): Promise<CohortAuditSummary | null> {
+    try {
+      const res = await fetch(`${API_BASE}/patient-monitoring/cohort-summary`);
+      if (!res.ok) throw new Error('Failed to fetch cohort summary');
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  async getSamplePatientRecords(): Promise<SamplePatientRecord[]> {
+    try {
+      const res = await fetch(`${API_BASE}/patient-monitoring/sample-records`);
+      if (!res.ok) throw new Error('Failed to fetch sample records');
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
 };
 

@@ -1,0 +1,8 @@
+vital_sign,missing_stays_count,missing_stays_pct,median_measurements_when_present,median_time_since_last_h
+heart_rate,0,0.0,26.0,0.5916666666666667
+respiratory_rate,0,0.0,26.0,0.5916666666666667
+spo2,0,0.0,25.0,0.6111111111111112
+systolic_bp,11,8.09,22.0,0.8748611111111111
+diastolic_bp,11,8.09,22.0,0.8748611111111111
+mean_bp,11,8.09,22.0,0.8748611111111111
+temperature_celsius,4,2.94,7.0,2.160972222222222

@@ -1,0 +1,539 @@
+{
+  "dataset_provenance": {
+    "filepath": "/Users/govathotyjoshkumar/Code Files/MP/datasets/edge_iiotset/selected_ml/ML-EdgeIIoT-dataset.csv",
+    "filename": "ML-EdgeIIoT-dataset.csv",
+    "file_size_mb": 78.38,
+    "file_size_gb": 0.077,
+    "is_sampled": false,
+    "analyzed_rows": 157800,
+    "total_columns": 63,
+    "memory_footprint_mb": 246.48
+  },
+  "data_hygiene": {
+    "duplicate_rows": 814,
+    "duplicate_pct": 0.52,
+    "total_nan_cells": 0,
+    "nan_cell_ratio_pct": 0.0,
+    "total_pos_inf_cells": 0,
+    "total_neg_inf_cells": 0,
+    "columns_with_missing_or_inf_count": 0,
+    "columns_with_missing_details": [],
+    "constant_columns": [
+      "icmp.unused",
+      "http.tls_port",
+      "dns.qry.type",
+      "dns.retransmit_request_in",
+      "mqtt.msg_decoded_as",
+      "mbtcp.len",
+      "mbtcp.trans_id",
+      "mbtcp.unit_id"
+    ],
+    "near_constant_columns": [
+      {
+        "column": "icmp.transmit_timestamp",
+        "unique_count": 84,
+        "dominant_value": "0.0",
+        "dominant_pct": 99.95
+      },
+      {
+        "column": "dns.retransmission",
+        "unique_count": 4,
+        "dominant_value": "0.0",
+        "dominant_pct": 99.98
+      },
+      {
+        "column": "dns.retransmit_request",
+        "unique_count": 2,
+        "dominant_value": "0.0",
+        "dominant_pct": 100.0
+      }
+    ]
+  },
+  "labels_and_classes": {
+    "detected_target_column": "Attack_type",
+    "num_classes": 15,
+    "distribution": [
+      {
+        "label": "Normal",
+        "count": 24301,
+        "percentage": 15.4
+      },
+      {
+        "label": "DDoS_UDP",
+        "count": 14498,
+        "percentage": 9.19
+      },
+      {
+        "label": "DDoS_ICMP",
+        "count": 14090,
+        "percentage": 8.93
+      },
+      {
+        "label": "Ransomware",
+        "count": 10925,
+        "percentage": 6.92
+      },
+      {
+        "label": "DDoS_HTTP",
+        "count": 10561,
+        "percentage": 6.69
+      },
+      {
+        "label": "SQL_injection",
+        "count": 10311,
+        "percentage": 6.53
+      },
+      {
+        "label": "Uploading",
+        "count": 10269,
+        "percentage": 6.51
+      },
+      {
+        "label": "DDoS_TCP",
+        "count": 10247,
+        "percentage": 6.49
+      },
+      {
+        "label": "Backdoor",
+        "count": 10195,
+        "percentage": 6.46
+      },
+      {
+        "label": "Vulnerability_scanner",
+        "count": 10076,
+        "percentage": 6.39
+      },
+      {
+        "label": "Port_Scanning",
+        "count": 10071,
+        "percentage": 6.38
+      },
+      {
+        "label": "XSS",
+        "count": 10052,
+        "percentage": 6.37
+      },
+      {
+        "label": "Password",
+        "count": 9989,
+        "percentage": 6.33
+      },
+      {
+        "label": "MITM",
+        "count": 1214,
+        "percentage": 0.77
+      },
+      {
+        "label": "Fingerprinting",
+        "count": 1001,
+        "percentage": 0.63
+      }
+    ],
+    "imbalance_ratio_majority_to_minority": 24.28
+  },
+  "protocol_analysis": {
+    "protocol_column": null,
+    "protocol_feature_signatures": {
+      "tcp": 18,
+      "udp": 3,
+      "icmp": 4,
+      "http": 9,
+      "mqtt": 13,
+      "dns": 7
+    }
+  },
+  "canonical_features_compatibility": {
+    "packet_length": {
+      "status": "UNAVAILABLE",
+      "matched_column": null,
+      "notes": "No matching header or flow field found in dataset schema."
+    },
+    "flow_duration": {
+      "status": "UNAVAILABLE",
+      "matched_column": null,
+      "notes": "No matching header or flow field found in dataset schema."
+    },
+    "header_length": {
+      "status": "UNAVAILABLE",
+      "matched_column": null,
+      "notes": "No matching header or flow field found in dataset schema."
+    },
+    "byte_rate": {
+      "status": "DERIVABLE",
+      "matched_column": null,
+      "notes": "Derivable from byte/packet count and flow_duration."
+    },
+    "packet_rate": {
+      "status": "DERIVABLE",
+      "matched_column": null,
+      "notes": "Derivable from byte/packet count and flow_duration."
+    },
+    "tcp_syn_flag": {
+      "status": "DERIVABLE_OR_ALIASED",
+      "matched_column": "tcp.connection.syn",
+      "notes": "Matches candidate alias 'tcp.connection.syn'."
+    },
+    "mqtt_msg_rate": {
+      "status": "DERIVABLE",
+      "matched_column": null,
+      "notes": "Derivable from MQTT flow counts or protocol timestamps."
+    },
+    "modbus_fn_code": {
+      "status": "UNAVAILABLE",
+      "matched_column": null,
+      "notes": "Valid Modbus function code field absent. mbtcp.trans_id/unit_id are identifiers and cannot be used as function codes. Non-Modbus records require protocol-specific encoding documentation."
+    },
+    "entropy": {
+      "status": "UNAVAILABLE",
+      "matched_column": null,
+      "notes": "Payload Shannon entropy is UNAVAILABLE in source tabular CSV. Must NOT be imputed with arbitrary constant in empirical benchmark. Config A requires documented missingness indicator; Config B excludes it."
+    }
+  },
+  "leakage_risk_audit": {
+    "total_flagged_columns": 8,
+    "flagged_columns": [
+      {
+        "column": "frame.time",
+        "risk_type": "frame.time",
+        "warning": "Absolute capture timestamp leaks chronological scenario ordering."
+      },
+      {
+        "column": "ip.src_host",
+        "risk_type": "ip.src",
+        "warning": "Source IP address leaks specific testbed attacking or victim subnets."
+      },
+      {
+        "column": "ip.dst_host",
+        "risk_type": "ip.dst",
+        "warning": "Destination IP address leaks target server or IoT device identities."
+      },
+      {
+        "column": "http.tls_port",
+        "risk_type": "port",
+        "warning": "Fixed ephemeral or target port numbers can memorize specific attack tool runs."
+      },
+      {
+        "column": "tcp.dstport",
+        "risk_type": "port",
+        "warning": "Fixed ephemeral or target port numbers can memorize specific attack tool runs."
+      },
+      {
+        "column": "tcp.srcport",
+        "risk_type": "port",
+        "warning": "Fixed ephemeral or target port numbers can memorize specific attack tool runs."
+      },
+      {
+        "column": "udp.port",
+        "risk_type": "port",
+        "warning": "Fixed ephemeral or target port numbers can memorize specific attack tool runs."
+      },
+      {
+        "column": "Attack_label",
+        "risk_type": "attack",
+        "warning": "Direct label or secondary attack classification flag."
+      }
+    ]
+  },
+  "feature_configurations": {
+    "configuration_a": {
+      "name": "Configuration A (Canonical Edge Model)",
+      "description": "Preserves 9-feature runtime interface for edge sensor gateways.",
+      "features": [
+        "packet_length",
+        "flow_duration",
+        "header_length",
+        "byte_rate",
+        "packet_rate",
+        "tcp_syn_flag",
+        "mqtt_msg_rate",
+        "modbus_fn_code",
+        "entropy"
+      ],
+      "unavailable_features": [
+        "packet_length",
+        "flow_duration",
+        "header_length",
+        "modbus_fn_code",
+        "entropy"
+      ],
+      "missingness_policy": "Explicit missingness indicator or training-fitted imputation; entropy marked unavailable."
+    },
+    "configuration_b": {
+      "name": "Configuration B (Expanded Empirical Benchmark)",
+      "description": "Uses strictly genuine, non-leaking features available in the dataset without fabrication.",
+      "candidate_feature_count": 47,
+      "candidate_features": [
+        "arp.dst.proto_ipv4",
+        "arp.opcode",
+        "arp.hw.size",
+        "arp.src.proto_ipv4",
+        "icmp.checksum",
+        "icmp.seq_le",
+        "icmp.transmit_timestamp",
+        "http.file_data",
+        "http.content_length",
+        "http.request.uri.query",
+        "http.request.method",
+        "http.referer",
+        "http.request.full_uri",
+        "http.request.version",
+        "http.response"
+      ],
+      "missingness_policy": "No synthetic constants; fitted imputation strictly on training split."
+    }
+  },
+  "column_inventory": [
+    {
+      "name": "frame.time",
+      "dtype": "str"
+    },
+    {
+      "name": "ip.src_host",
+      "dtype": "str"
+    },
+    {
+      "name": "ip.dst_host",
+      "dtype": "str"
+    },
+    {
+      "name": "arp.dst.proto_ipv4",
+      "dtype": "str"
+    },
+    {
+      "name": "arp.opcode",
+      "dtype": "float64"
+    },
+    {
+      "name": "arp.hw.size",
+      "dtype": "float64"
+    },
+    {
+      "name": "arp.src.proto_ipv4",
+      "dtype": "str"
+    },
+    {
+      "name": "icmp.checksum",
+      "dtype": "float64"
+    },
+    {
+      "name": "icmp.seq_le",
+      "dtype": "float64"
+    },
+    {
+      "name": "icmp.transmit_timestamp",
+      "dtype": "float64"
+    },
+    {
+      "name": "icmp.unused",
+      "dtype": "float64"
+    },
+    {
+      "name": "http.file_data",
+      "dtype": "str"
+    },
+    {
+      "name": "http.content_length",
+      "dtype": "float64"
+    },
+    {
+      "name": "http.request.uri.query",
+      "dtype": "str"
+    },
+    {
+      "name": "http.request.method",
+      "dtype": "str"
+    },
+    {
+      "name": "http.referer",
+      "dtype": "str"
+    },
+    {
+      "name": "http.request.full_uri",
+      "dtype": "str"
+    },
+    {
+      "name": "http.request.version",
+      "dtype": "str"
+    },
+    {
+      "name": "http.response",
+      "dtype": "float64"
+    },
+    {
+      "name": "http.tls_port",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.ack",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.ack_raw",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.checksum",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.connection.fin",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.connection.rst",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.connection.syn",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.connection.synack",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.dstport",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.flags",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.flags.ack",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.len",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.options",
+      "dtype": "str"
+    },
+    {
+      "name": "tcp.payload",
+      "dtype": "str"
+    },
+    {
+      "name": "tcp.seq",
+      "dtype": "float64"
+    },
+    {
+      "name": "tcp.srcport",
+      "dtype": "str"
+    },
+    {
+      "name": "udp.port",
+      "dtype": "float64"
+    },
+    {
+      "name": "udp.stream",
+      "dtype": "float64"
+    },
+    {
+      "name": "udp.time_delta",
+      "dtype": "float64"
+    },
+    {
+      "name": "dns.qry.name",
+      "dtype": "float64"
+    },
+    {
+      "name": "dns.qry.name.len",
+      "dtype": "str"
+    },
+    {
+      "name": "dns.qry.qu",
+      "dtype": "float64"
+    },
+    {
+      "name": "dns.qry.type",
+      "dtype": "float64"
+    },
+    {
+      "name": "dns.retransmission",
+      "dtype": "float64"
+    },
+    {
+      "name": "dns.retransmit_request",
+      "dtype": "float64"
+    },
+    {
+      "name": "dns.retransmit_request_in",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.conack.flags",
+      "dtype": "str"
+    },
+    {
+      "name": "mqtt.conflag.cleansess",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.conflags",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.hdrflags",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.len",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.msg_decoded_as",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.msg",
+      "dtype": "str"
+    },
+    {
+      "name": "mqtt.msgtype",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.proto_len",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.protoname",
+      "dtype": "str"
+    },
+    {
+      "name": "mqtt.topic",
+      "dtype": "str"
+    },
+    {
+      "name": "mqtt.topic_len",
+      "dtype": "float64"
+    },
+    {
+      "name": "mqtt.ver",
+      "dtype": "float64"
+    },
+    {
+      "name": "mbtcp.len",
+      "dtype": "float64"
+    },
+    {
+      "name": "mbtcp.trans_id",
+      "dtype": "float64"
+    },
+    {
+      "name": "mbtcp.unit_id",
+      "dtype": "float64"
+    },
+    {
+      "name": "Attack_label",
+      "dtype": "int64"
+    },
+    {
+      "name": "Attack_type",
+      "dtype": "str"
+    }
+  ]
+}

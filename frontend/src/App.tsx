@@ -14,7 +14,9 @@ import { AICopilotDrawer } from './components/copilot/AICopilotDrawer';
 import { SecurityActionModal } from './components/modals/SecurityActionModal';
 import { GlobalSearchModal } from './components/search/GlobalSearchModal';
 import { MachineSignalsView } from './components/signals/MachineSignalsView';
+import { PatientMonitoringView } from './components/patient/PatientMonitoringView';
 
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { apiService } from './services/api';
 import { useWebSocket } from './hooks/useWebSocket';
 import { DashboardStats, Device, Alert, MLMetrics, CopilotContextType } from './types';
@@ -206,6 +208,9 @@ export const AppContent: React.FC = () => {
             <MachineSignalsView />
           )}
 
+          {activeTab === 'patient-monitoring' && (
+            <PatientMonitoringView />
+          )}
 
           {activeTab === 'alerts' && (
             <AlertCenter
@@ -317,7 +322,9 @@ export const AppContent: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <ThemeProvider>
-      <AppContent />
+      <ErrorBoundary>
+        <AppContent />
+      </ErrorBoundary>
     </ThemeProvider>
   );
 };

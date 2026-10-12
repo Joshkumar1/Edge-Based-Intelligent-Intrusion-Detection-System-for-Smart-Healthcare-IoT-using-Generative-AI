@@ -1,0 +1,100 @@
+{
+  "pipeline_stage": "Step 3 \u2014 Verify the Eligible Cohort",
+  "dataset": "MIMIC-IV Clinical Database Demo 2.2",
+  "prediction_time_definition": "ICU intime + 24 hours",
+  "counts_before_filtering": {
+    "total_icu_stays": 140,
+    "total_unique_patients": 100,
+    "stays_linked_to_outcomes": 140,
+    "missing_outcomes": 0
+  },
+  "exclusions": {
+    "total_excluded_stays": 4,
+    "deaths_before_or_at_prediction_time": 2,
+    "deaths_before_pred_stays": [
+      36871784,
+      38275267
+    ],
+    "discharged_alive_before_prediction_time": 2,
+    "discharged_alive_before_pred_stays": [
+      32554129,
+      30864406
+    ],
+    "total_hospital_discharges_before_prediction_time": 4
+  },
+  "eligible_cohort": {
+    "eligible_icu_stays": 136,
+    "unique_eligible_patients": 98,
+    "eligible_deaths_stays": 18,
+    "eligible_survivors_stays": 118,
+    "eligible_deaths_unique_patients": 14,
+    "eligible_survivors_unique_patients": 88,
+    "patients_with_mixed_outcomes_across_admissions": 4,
+    "mixed_outcome_patient_ids": [
+      10003400,
+      10005817,
+      10015931,
+      10023117
+    ],
+    "class_prevalence_percent": 13.24
+  },
+  "coverage_metrics": {
+    "eligible_stays_with_core_vitals": 136,
+    "eligible_stays_with_18h_distinct_observations": 126,
+    "eligible_stays_with_24h_distinct_observations": 84,
+    "median_measurements_per_stay": 145.5,
+    "median_distinct_hours_per_stay": 24.0
+  },
+  "repeated_icu_stays": {
+    "all_cohort_distribution": {
+      "1": 74,
+      "2": 16,
+      "3": 7,
+      "4": 2,
+      "5": 1
+    },
+    "eligible_cohort_distribution": {
+      "1": 73,
+      "2": 16,
+      "3": 6,
+      "4": 2,
+      "5": 1
+    }
+  },
+  "timestamp_inconsistencies": {
+    "intime_after_outtime_count": 0,
+    "admittime_after_dischtime_count": 0,
+    "intime_before_admittime_count": 2,
+    "intime_before_admittime_stays": [
+      35679826,
+      31494479
+    ],
+    "outtime_after_dischtime_count": 22,
+    "outtime_after_dischtime_stays": [
+      32554129,
+      32119961,
+      36871784,
+      38383343,
+      30864406,
+      34617352,
+      32359580,
+      39492446,
+      32314488,
+      39061571,
+      30425410,
+      38430513,
+      35009126,
+      35479615,
+      38275267,
+      37057036,
+      36496303,
+      34531557,
+      31316840,
+      33846653,
+      30101877,
+      37093652
+    ],
+    "flag_1_missing_deathtime_count": 0,
+    "flag_0_unexpected_deathtime_count": 0
+  }
+}

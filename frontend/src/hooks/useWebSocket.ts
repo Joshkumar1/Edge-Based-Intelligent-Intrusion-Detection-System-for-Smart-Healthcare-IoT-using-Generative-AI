@@ -20,8 +20,21 @@ export function useWebSocket(url: string) {
 
     ws.onmessage = (event) => {
       try {
-        const parsed: TelemetryStreamEvent = JSON.parse(event.data);
-        setLastEvent(parsed);
+        const raw = JSON.parse(event.data);
+        // Normalize: if backend broadcast an envelope, unpack payload fields to root
+        let normalized: TelemetryStreamEvent;
+        if (raw && typeof raw === 'object' && raw.payload && typeof raw.payload === 'object') {
+          normalized = {
+            ...raw.payload,
+            event_type: raw.event_type || raw.payload.event_type,
+            event_id: raw.event_id || raw.payload.event_id,
+            correlation_id: raw.correlation_id || raw.payload.correlation_id,
+            timestamp: raw.timestamp || raw.payload.timestamp,
+          };
+        } else {
+          normalized = raw;
+        }
+        setLastEvent(normalized);
       } catch (e) {
         console.error("WebSocket message parse error", e);
       }

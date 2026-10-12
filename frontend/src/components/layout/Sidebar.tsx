@@ -1,7 +1,7 @@
 import React from 'react';
-import { LayoutDashboard, AlertTriangle, Monitor, BarChart3, Zap, ShieldAlert, FileText, Settings, Activity } from 'lucide-react';
+import { LayoutDashboard, AlertTriangle, Monitor, BarChart3, Zap, ShieldAlert, FileText, Settings, Activity, HeartPulse } from 'lucide-react';
 
-export type TabType = 'dashboard' | 'signals' | 'alerts' | 'devices' | 'analytics' | 'simulator' | 'docs';
+export type TabType = 'dashboard' | 'signals' | 'patient-monitoring' | 'alerts' | 'devices' | 'analytics' | 'simulator' | 'docs';
 
 interface SidebarProps {
   activeTab: TabType;
@@ -13,6 +13,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, activ
   const navItems = [
     { id: 'dashboard', label: 'Overview Dashboard', icon: LayoutDashboard },
     { id: 'signals', label: 'Machine Signals & Defense', icon: Activity },
+    { id: 'patient-monitoring', label: 'Patient Vitals & Risk', icon: HeartPulse },
     { id: 'alerts', label: 'Alert Center', icon: AlertTriangle, badge: activeAlertsCount },
     { id: 'devices', label: 'Device Inventory', icon: Monitor },
     { id: 'analytics', label: 'ML Analytics', icon: BarChart3 },
