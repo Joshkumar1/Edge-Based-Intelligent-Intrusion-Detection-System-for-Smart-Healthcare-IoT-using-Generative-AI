@@ -31,3 +31,27 @@ def get_ml_metrics():
             "macro_f1": 0.9907
         }
     }
+
+
+@router.get("/model-status")
+def get_model_status():
+    """Returns runtime model versions and loaded states for Phase 1 and Empirical pipelines."""
+    from app.services.ml_engine import ml_engine
+    return ml_engine.get_model_status()
+
+
+@router.get("/empirical-metrics")
+def get_empirical_metrics():
+    """Returns verified empirical benchmark metrics trained on Edge-IIoTset (157,800 records)."""
+    empirical_dir = os.path.abspath(os.path.join(settings.MODEL_DIR, "..", "models", "empirical"))
+    metrics_path = os.path.join(empirical_dir, "evaluation_metrics.json")
+
+    if os.path.exists(metrics_path):
+        with open(metrics_path, "r") as f:
+            return json.load(f)
+
+    return {
+        "status": "NOT_FOUND",
+        "message": "Empirical metrics artifact not found."
+    }
+

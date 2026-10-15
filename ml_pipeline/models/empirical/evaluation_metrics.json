@@ -1,0 +1,558 @@
+{
+  "Logistic_Regression_Config_B": {
+    "accuracy": 0.6475946186462859,
+    "macro_precision": 0.6815272206571708,
+    "macro_recall": 0.5367201166684794,
+    "macro_f1": 0.5695905259544811,
+    "weighted_f1": 0.647102804727772,
+    "normal_false_alarm_rate": 0.46430910281597904,
+    "roc_auc_macro_ovr": 0.9003968658201701,
+    "per_class": {
+      "Normal": {
+        "precision": 0.44723892837616186,
+        "recall": 0.535690897184021,
+        "f1_score": 0.48748510131108463,
+        "support": 3054
+      },
+      "Flood DoS / DDoS": {
+        "precision": 0.7968623208006492,
+        "recall": 0.7951417004048583,
+        "f1_score": 0.796001080788976,
+        "support": 7410
+      },
+      "Ransomware": {
+        "precision": 0.5352461043779372,
+        "recall": 0.5936899862825789,
+        "f1_score": 0.562955254942768,
+        "support": 3645
+      },
+      "Command Injection": {
+        "precision": 0.6376195536663124,
+        "recall": 0.36607687614399026,
+        "f1_score": 0.4651162790697675,
+        "support": 1639
+      },
+      "Reconnaissance": {
+        "precision": 0.6721964167219642,
+        "recall": 0.6385124487866373,
+        "f1_score": 0.6549216098270567,
+        "support": 3173
+      },
+      "Spoofing / MITM": {
+        "precision": 1.0,
+        "recall": 0.29120879120879123,
+        "f1_score": 0.451063829787234,
+        "support": 182
+      }
+    },
+    "confusion_matrix": [
+      [
+        1636,
+        355,
+        830,
+        120,
+        113,
+        0
+      ],
+      [
+        367,
+        5892,
+        316,
+        137,
+        698,
+        0
+      ],
+      [
+        1153,
+        260,
+        2164,
+        60,
+        8,
+        0
+      ],
+      [
+        344,
+        86,
+        440,
+        600,
+        169,
+        0
+      ],
+      [
+        158,
+        801,
+        164,
+        24,
+        2026,
+        0
+      ],
+      [
+        0,
+        0,
+        129,
+        0,
+        0,
+        53
+      ]
+    ],
+    "latency": {
+      "mean_us": 46.79786556516774,
+      "median_us": 38.45850005745888,
+      "p95_us": 74.08298697555438,
+      "p99_us": 148.85082782711825,
+      "std_us": 80.69675773418906,
+      "throughput_packets_per_sec": 21368.49593294941
+    },
+    "training_time_sec": 1.9580552577972412
+  },
+  "Decision_Tree_Config_B": {
+    "accuracy": 0.7060671098780297,
+    "macro_precision": 0.6887485877474346,
+    "macro_recall": 0.7034378255702775,
+    "macro_f1": 0.637710358720842,
+    "weighted_f1": 0.7061475269777566,
+    "normal_false_alarm_rate": 0.5838244924688932,
+    "roc_auc_macro_ovr": 0.93665173755371,
+    "per_class": {
+      "Normal": {
+        "precision": 0.6285855588526211,
+        "recall": 0.41617550753110677,
+        "f1_score": 0.5007880220646178,
+        "support": 3054
+      },
+      "Flood DoS / DDoS": {
+        "precision": 0.9659886628876292,
+        "recall": 0.7819163292847503,
+        "f1_score": 0.8642601431980907,
+        "support": 7410
+      },
+      "Ransomware": {
+        "precision": 0.5134375548919726,
+        "recall": 0.801920438957476,
+        "f1_score": 0.6260441207967445,
+        "support": 3645
+      },
+      "Command Injection": {
+        "precision": 0.9883333333333333,
+        "recall": 0.3618059792556437,
+        "f1_score": 0.5297007592675301,
+        "support": 1639
+      },
+      "Reconnaissance": {
+        "precision": 0.6271576524741082,
+        "recall": 0.8588086983926883,
+        "f1_score": 0.7249268422452779,
+        "support": 3173
+      },
+      "Spoofing / MITM": {
+        "precision": 0.40898876404494383,
+        "recall": 1.0,
+        "f1_score": 0.580542264752791,
+        "support": 182
+      }
+    },
+    "confusion_matrix": [
+      [
+        1271,
+        18,
+        1454,
+        1,
+        235,
+        75
+      ],
+      [
+        124,
+        5794,
+        543,
+        2,
+        947,
+        0
+      ],
+      [
+        494,
+        14,
+        2923,
+        2,
+        205,
+        7
+      ],
+      [
+        69,
+        18,
+        621,
+        593,
+        233,
+        105
+      ],
+      [
+        64,
+        154,
+        152,
+        2,
+        2725,
+        76
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        182
+      ]
+    ],
+    "latency": {
+      "mean_us": 63.73679547687061,
+      "median_us": 31.08399687334895,
+      "p95_us": 201.66903996141627,
+      "p99_us": 257.1795869152991,
+      "std_us": 67.56476709580743,
+      "throughput_packets_per_sec": 15689.524277430752
+    },
+    "training_time_sec": 0.09042882919311523
+  },
+  "Random_Forest_Config_B": {
+    "accuracy": 0.7026121551588755,
+    "macro_precision": 0.6831280111233539,
+    "macro_recall": 0.7174820882421921,
+    "macro_f1": 0.6427825332808427,
+    "weighted_f1": 0.7096861222144735,
+    "normal_false_alarm_rate": 0.18402095612311722,
+    "roc_auc_macro_ovr": 0.9342063350719355,
+    "per_class": {
+      "Normal": {
+        "precision": 0.4423930410083437,
+        "recall": 0.8159790438768828,
+        "f1_score": 0.5737308622078968,
+        "support": 3054
+      },
+      "Flood DoS / DDoS": {
+        "precision": 0.9941921858500528,
+        "recall": 0.7623481781376519,
+        "f1_score": 0.8629697525206234,
+        "support": 7410
+      },
+      "Ransomware": {
+        "precision": 0.81396484375,
+        "recall": 0.45733882030178324,
+        "f1_score": 0.5856314772527665,
+        "support": 3645
+      },
+      "Command Injection": {
+        "precision": 0.8206451612903226,
+        "recall": 0.38804148871262967,
+        "f1_score": 0.5269262634631318,
+        "support": 1639
+      },
+      "Reconnaissance": {
+        "precision": 0.6185840707964602,
+        "recall": 0.8811849984242042,
+        "f1_score": 0.7268945794878461,
+        "support": 3173
+      },
+      "Spoofing / MITM": {
+        "precision": 0.40898876404494383,
+        "recall": 1.0,
+        "f1_score": 0.580542264752791,
+        "support": 182
+      }
+    },
+    "confusion_matrix": [
+      [
+        2492,
+        6,
+        227,
+        26,
+        228,
+        75
+      ],
+      [
+        577,
+        5649,
+        87,
+        18,
+        1079,
+        0
+      ],
+      [
+        1731,
+        15,
+        1667,
+        24,
+        201,
+        7
+      ],
+      [
+        640,
+        0,
+        42,
+        636,
+        216,
+        105
+      ],
+      [
+        193,
+        12,
+        25,
+        71,
+        2796,
+        76
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        182
+      ]
+    ],
+    "latency": {
+      "mean_us": 13012.116049911128,
+      "median_us": 13554.603996453807,
+      "p95_us": 13789.529143832624,
+      "p99_us": 14198.686861200256,
+      "std_us": 1004.9485070373596,
+      "throughput_packets_per_sec": 76.85145107561732
+    },
+    "training_time_sec": 0.7655811309814453
+  },
+  "XGBoost_Config_B": {
+    "accuracy": 0.7050725017013034,
+    "macro_precision": 0.6793034055951385,
+    "macro_recall": 0.702703093806346,
+    "macro_f1": 0.6381607158312201,
+    "weighted_f1": 0.7066104995138837,
+    "normal_false_alarm_rate": 0.5363457760314342,
+    "roc_auc_macro_ovr": 0.9389421353323986,
+    "per_class": {
+      "Normal": {
+        "precision": 0.5707376058041113,
+        "recall": 0.4636542239685658,
+        "f1_score": 0.5116531165311653,
+        "support": 3054
+      },
+      "Flood DoS / DDoS": {
+        "precision": 0.9583676155998025,
+        "recall": 0.7859649122807018,
+        "f1_score": 0.863646474382739,
+        "support": 7410
+      },
+      "Ransomware": {
+        "precision": 0.5307251908396946,
+        "recall": 0.762962962962963,
+        "f1_score": 0.625998874507597,
+        "support": 3645
+      },
+      "Command Injection": {
+        "precision": 0.9784768211920529,
+        "recall": 0.3605857230018304,
+        "f1_score": 0.5269728042799822,
+        "support": 1639
+      },
+      "Reconnaissance": {
+        "precision": 0.6285244360902256,
+        "recall": 0.8430507406240151,
+        "f1_score": 0.7201507605330462,
+        "support": 3173
+      },
+      "Spoofing / MITM": {
+        "precision": 0.40898876404494383,
+        "recall": 1.0,
+        "f1_score": 0.580542264752791,
+        "support": 182
+      }
+    },
+    "confusion_matrix": [
+      [
+        1416,
+        9,
+        1311,
+        8,
+        235,
+        75
+      ],
+      [
+        186,
+        5824,
+        482,
+        2,
+        916,
+        0
+      ],
+      [
+        640,
+        18,
+        2781,
+        2,
+        197,
+        7
+      ],
+      [
+        154,
+        20,
+        536,
+        591,
+        233,
+        105
+      ],
+      [
+        85,
+        206,
+        130,
+        1,
+        2675,
+        76
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        182
+      ]
+    ],
+    "latency": {
+      "mean_us": 147.59673769003712,
+      "median_us": 146.87498332932591,
+      "p95_us": 161.3351094420068,
+      "p99_us": 338.5528430226259,
+      "std_us": 25.81768006327215,
+      "throughput_packets_per_sec": 6775.217499048427
+    },
+    "training_time_sec": 1.3686110973358154
+  },
+  "Random_Forest_Config_A": {
+    "accuracy": 0.04475736795267759,
+    "macro_precision": 0.04671148954241617,
+    "macro_recall": 0.20201701859439017,
+    "macro_f1": 0.04316513369353006,
+    "weighted_f1": 0.03962303125424029,
+    "normal_false_alarm_rate": 1.0,
+    "roc_auc_macro_ovr": 0.5464472267774708,
+    "per_class": {
+      "Normal": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 3054
+      },
+      "Flood DoS / DDoS": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 7410
+      },
+      "Ransomware": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 3645
+      },
+      "Command Injection": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 1639
+      },
+      "Reconnaissance": {
+        "precision": 0.2693077230892357,
+        "recall": 0.212102111566341,
+        "f1_score": 0.23730606488011283,
+        "support": 3173
+      },
+      "Spoofing / MITM": {
+        "precision": 0.010961214165261383,
+        "recall": 1.0,
+        "f1_score": 0.021684737281067557,
+        "support": 182
+      }
+    },
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        0,
+        0,
+        231,
+        2823
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1321,
+        6089
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        191,
+        3454
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        83,
+        1556
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        673,
+        2500
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        182
+      ]
+    ],
+    "latency": {
+      "mean_us": 12965.666254720418,
+      "median_us": 13527.00000279583,
+      "p95_us": 13790.708351007197,
+      "p99_us": 14231.359075638464,
+      "std_us": 1041.90640897668,
+      "throughput_packets_per_sec": 77.12677315258901
+    },
+    "training_time_sec": 0.23642301559448242
+  },
+  "Isolation_Forest_Config_B": {
+    "model_name": "Isolation_Forest_Config_B",
+    "training_samples_normal": 17011,
+    "false_alarm_rate_normal_test": 0.04993141289437586,
+    "detection_rate_in_dist_attacks": 0.0028464225643679646,
+    "detection_rate_ood_threats": 0.0,
+    "ood_sample_size": 30453,
+    "latency": {
+      "mean_us": 2020.4619459982496,
+      "median_us": 1900.2705084858462,
+      "p95_us": 2382.9315468901755,
+      "p99_us": 4388.991343439556,
+      "std_us": 603.494785432224,
+      "throughput_packets_per_sec": 494.93631987507194
+    },
+    "training_time_sec": 0.0950312614440918
+  },
+  "model_artifact_sizes_kb": {
+    "rf_classifier_config_b.joblib": 24537.59,
+    "isolation_forest_config_b.joblib": 1261.57,
+    "lr_classifier_config_b.joblib": 2.99,
+    "xgb_classifier_config_b.joblib": 1851.37,
+    "dt_classifier_config_b.joblib": 75.65,
+    "label_encoder.joblib": 0.72,
+    "rf_classifier_config_a.joblib": 773.35
+  }
+}
