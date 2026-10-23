@@ -45,6 +45,7 @@ backend/edgeshield.db
 
 # Large archives and build caches
 *.zip
+!EdgeShield_AI_LaTeX_IEEE.zip
 MP.zip
 .vite/
 frontend/.vite/
